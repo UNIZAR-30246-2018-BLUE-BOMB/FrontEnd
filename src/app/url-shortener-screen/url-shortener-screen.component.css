@@ -1,3 +1,10 @@
 .shortener-result-card {
   max-width: 400px;
 }
+
+.ads-container{
+  margin-top: 8px;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}

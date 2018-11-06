@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component,  Output , OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-url-shortener-screen',
@@ -7,7 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UrlShortenerScreenComponent implements OnInit {
 
-  constructor() { }
+  @Output()
+  public includeAds = false;
+
+  constructor() {
+  }
 
   ngOnInit() {
   }

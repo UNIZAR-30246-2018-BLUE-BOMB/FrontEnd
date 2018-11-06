@@ -5,9 +5,9 @@
 
   <div class="ads-container">
     <mat-form-field>
-      <input matInput placeholder="PUBLICIDAD">
+      <input matInput placeholder="PUBLICIDAD" [disabled]="!includeAds">
     </mat-form-field>
-    <mat-checkbox>Incluir publicidad</mat-checkbox>
+    <mat-checkbox [(ngModel)]="includeAds">Incluir publicidad</mat-checkbox>
   </div>
 
   <button mat-button>ACORTAR</button>

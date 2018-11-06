@@ -8,6 +8,7 @@ import {
   MatCheckboxModule,
   MatCardModule
 } from '@angular/material';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -21,6 +22,7 @@ import { UrlShortenerScreenComponent } from './url-shortener-screen/url-shortene
     UrlShortenerScreenComponent
   ],
   imports: [
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatFormFieldModule,
