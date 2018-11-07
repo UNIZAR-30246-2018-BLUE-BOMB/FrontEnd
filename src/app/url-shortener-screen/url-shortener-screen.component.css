@@ -2,9 +2,19 @@
   max-width: 400px;
 }
 
-.ads-container{
-  margin-top: 8px;
-  display: block;
-  margin-right: auto;
-  margin-left: auto;
+.form-container{
+  width: 466px;
+  margin: 15% auto;
+}
+
+.input-forms{
+  width: 300px;
+}
+
+.short-button{
+  margin-left: 225px;
+}
+
+.checkbox-ads{
+  margin-left: 16px;
 }

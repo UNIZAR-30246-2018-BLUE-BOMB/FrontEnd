@@ -1,19 +1,20 @@
+<app-navbar></app-navbar>
 <div class="form-container">
-  <mat-form-field>
-    <input matInput placeholder="URI">
+  <mat-form-field class="input-forms">
+    <input matInput placeholder="Uri a acortar">
   </mat-form-field>
 
   <div class="ads-container">
-    <mat-form-field>
-      <input matInput placeholder="PUBLICIDAD" [disabled]="!includeAds">
+    <mat-form-field class="input-forms">
+      <input matInput placeholder="Uri anuncio" [disabled]="!includeAds">
     </mat-form-field>
-    <mat-checkbox [(ngModel)]="includeAds">Incluir publicidad</mat-checkbox>
+    <mat-checkbox [(ngModel)]="includeAds" class="checkbox-ads">Incluir publicidad</mat-checkbox>
   </div>
 
-  <button mat-button>ACORTAR</button>
+  <button mat-button color="primary" class="short-button" (click)="shortenUrl()">ACORTAR</button>
 </div>
 
-<div class="shortener-result-container">
+<div class="shortener-result-container" *ngIf="false">
   <mat-card class="shortener-result-card">
     <mat-card-header>
       <mat-card-title>URI acrotada</mat-card-title>
