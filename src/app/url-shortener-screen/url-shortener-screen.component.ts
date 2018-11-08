@@ -3,11 +3,6 @@ import { MatDialog } from '@angular/material';
 import { ShortenerResultDialogComponent } from "./shortener-result-dialog/shortener-result-dialog.component";
 import { FormControl, Validators } from '@angular/forms';
 
-export interface DialogData {
-  animal: string;
-  name: string;
-}
-
 @Component({
   selector: 'app-url-shortener-screen',
   templateUrl: './url-shortener-screen.component.html',
