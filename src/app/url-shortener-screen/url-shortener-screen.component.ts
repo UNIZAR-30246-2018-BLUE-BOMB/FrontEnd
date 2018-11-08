@@ -12,7 +12,7 @@ export class UrlShortenerScreenComponent {
 
   /**
    * Regular expression for URLs detection
-   * Author: https://stackoverflow.com/questions/52017171/angular-material-url-validation-with-pattern
+   * Source: https://stackoverflow.com/questions/52017171/angular-material-url-validation-with-pattern
    */
   public urlRegExp = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi
 
@@ -27,6 +27,16 @@ export class UrlShortenerScreenComponent {
   //public adsInputForm = new FormControl('', [Validators.pattern(this.urlRegExp)]);
 
   /**
+   * Message shown in the shortener button
+   */
+  public buttonText = "ACORTAR";
+
+  /**
+   * Control if is shortener button enabled
+   */
+  public isShortenerButtonEnabled = true;
+
+  /**
    * State of the check box
    */
   @Output()
@@ -38,14 +48,33 @@ export class UrlShortenerScreenComponent {
    * Function execuded when shorten url button is clicked
    */
   public shortenUrl(): void {
-    this.openDialog();
+    this.urlInputForm.markAsTouched();
+
+    if (this.urlInputForm.valid) {
+      this.isShortenerButtonEnabled = false;
+      this.buttonText = "PROCESANDO ...";
+
+      // TODO: Call rest api
+      setTimeout(ignore => {
+        this.openDialog(this.urlInputForm.value);
+      }, 2000);
+    }
   }
 
-  private openDialog(): void {
-    // TODO: Do it 
-    this.dialog.open(ShortenerResultDialogComponent, {
+  /**
+   * Open a dialog and show the shorten uri and the qr code
+   * @param shortedUri Shorten URI
+   */
+  private openDialog(shortedUri: String): void {
+    // TODO: Pass correct image
+    const dialogRef = this.dialog.open(ShortenerResultDialogComponent, {
       width: '350px',
-      data: { uri: "http://bluebomb.com/blue-bomb" }
+      data: { uri: shortedUri }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.buttonText = "ACORTAR";
+      this.isShortenerButtonEnabled = true;
     });
   }
 }

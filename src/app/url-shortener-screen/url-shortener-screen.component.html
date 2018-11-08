@@ -1,4 +1,5 @@
 <app-navbar></app-navbar>
+
 <div class="form-container">
   <mat-form-field class="input-forms">
     <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm" required>
@@ -6,22 +7,12 @@
     <mat-error *ngIf="urlInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
   </mat-form-field>
 
-  <div class="ads-container">
+  <div>
     <mat-form-field class="input-forms">
       <input matInput placeholder="Uri anuncio" [disabled]="!includeAds">
     </mat-form-field>
     <mat-checkbox [(ngModel)]="includeAds" class="checkbox-ads">Incluir publicidad</mat-checkbox>
   </div>
 
-  <button mat-button color="primary" class="short-button" (click)="shortenUrl()">ACORTAR</button>
-</div>
-
-<div class="shortener-result-container" *ngIf="false">
-  <mat-card class="shortener-result-card">
-    <mat-card-header>
-      <mat-card-title>URI acrotada</mat-card-title>
-      <mat-card-subtitle>http://bluebomb.com/blue-bomb</mat-card-subtitle>
-    </mat-card-header>
-    <img mat-card-image src="../../assets/qr-example.svg" alt="Photo of a Shiba Inu">
-  </mat-card>
+  <button mat-button color="primary" class="short-button" (click)="shortenUrl()" [disabled]="!isShortenerButtonEnabled">{{buttonText}}</button>
 </div>
