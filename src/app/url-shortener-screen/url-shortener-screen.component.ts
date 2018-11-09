@@ -1,5 +1,5 @@
-import { Component, Output } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component } from '@angular/core';
+import { MatCheckboxChange, MatDialog } from '@angular/material';
 import { ShortenerResultDialogComponent } from "./shortener-result-dialog/shortener-result-dialog.component";
 import { FormControl, Validators } from '@angular/forms';
 
@@ -14,7 +14,7 @@ export class UrlShortenerScreenComponent {
    * Regular expression for URLs detection
    * Source: https://stackoverflow.com/questions/52017171/angular-material-url-validation-with-pattern
    */
-  public urlRegExp = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi
+  public urlRegExp = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi;
 
   /**
    * Url input field's form control
@@ -24,7 +24,7 @@ export class UrlShortenerScreenComponent {
   /**
    * Ads input field's form control
    */
-  //public adsInputForm = new FormControl('', [Validators.pattern(this.urlRegExp)]);
+  public adsInputForm = new FormControl({ value: '', disabled: true }, [Validators.required, Validators.pattern(this.urlRegExp)]);
 
   /**
    * Message shown in the shortener button
@@ -36,21 +36,24 @@ export class UrlShortenerScreenComponent {
    */
   public isShortenerButtonEnabled = true;
 
-  /**
-   * State of the check box
-   */
-  @Output()
-  public includeAds = false;
-
   constructor(public dialog: MatDialog) { }
 
   /**
    * Function execuded when shorten url button is clicked
    */
-  public shortenUrl(): void {
-    this.urlInputForm.markAsTouched();
+  public onShortenUrlClick(): void {
+    // Control if adsInputForm is valid
+    let adsInputFormValid = true;
 
-    if (this.urlInputForm.valid) {
+    // Mark as touched used fields
+    this.urlInputForm.markAsTouched();
+    if (this.adsInputForm.enabled) {
+      this.adsInputForm.markAsTouched();
+      adsInputFormValid = this.adsInputForm.valid;
+    }
+
+    // Only open dialog if fields are corrects
+    if (this.urlInputForm.valid && adsInputFormValid) {
       this.isShortenerButtonEnabled = false;
       this.buttonText = "PROCESANDO ...";
 
@@ -76,5 +79,18 @@ export class UrlShortenerScreenComponent {
       this.buttonText = "ACORTAR";
       this.isShortenerButtonEnabled = true;
     });
+  }
+
+  /**
+   * Function executed when checkbox change
+   * @param event checkbox event
+   */
+  public onCheckboxChange(event: MatCheckboxChange) {
+    if (event.checked) {
+      this.adsInputForm.enable();
+    }
+    else {
+      this.adsInputForm.disable();
+    }
   }
 }

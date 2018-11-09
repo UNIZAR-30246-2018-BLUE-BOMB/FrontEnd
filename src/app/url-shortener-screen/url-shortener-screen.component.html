@@ -2,17 +2,19 @@
 
 <div class="form-container">
   <mat-form-field class="input-forms">
-    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm" required>
+    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm">
     <mat-error *ngIf="urlInputForm.hasError('required')">Este campo es obligatorio</mat-error>
     <mat-error *ngIf="urlInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
   </mat-form-field>
 
   <div>
     <mat-form-field class="input-forms">
-      <input matInput placeholder="Uri anuncio" [disabled]="!includeAds">
+      <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm">
+      <mat-error *ngIf="adsInputForm.hasError('required')">Este campo es obligatorio</mat-error>
+      <mat-error *ngIf="adsInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
     </mat-form-field>
-    <mat-checkbox [(ngModel)]="includeAds" class="checkbox-ads">Incluir publicidad</mat-checkbox>
+    <mat-checkbox (change)="onCheckboxChange($event)" class="checkbox-ads">Incluir publicidad</mat-checkbox>
   </div>
 
-  <button mat-button color="primary" class="short-button" (click)="shortenUrl()" [disabled]="!isShortenerButtonEnabled">{{buttonText}}</button>
+  <button mat-button color="primary" class="short-button" (click)="onShortenUrlClick()" [disabled]="!isShortenerButtonEnabled">{{buttonText}}</button>
 </div>
