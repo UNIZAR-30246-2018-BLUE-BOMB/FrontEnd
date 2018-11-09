@@ -17,10 +17,17 @@ export class ShortenerResultDialogComponent{
     public dialogRef: MatDialogRef<ShortenerResultDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
+    /**
+     * Executed when copy button is clicked
+     */
     onCopyClick(): void {
+      // TODO: Copy data.url to clipboard
       this.dialogRef.close();
     }
   
+    /**
+     * Executed when close button is clicked
+     */
     onCloseClick(): void {
       this.dialogRef.close();
     }
