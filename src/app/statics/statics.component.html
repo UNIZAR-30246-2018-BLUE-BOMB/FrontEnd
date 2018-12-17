@@ -3,20 +3,20 @@
   <div class="filters">
     <div>
       <mat-form-field class="date-picker">
-        <input matInput [matDatepicker]="startPicker" placeholder="Inicio" [formControl]="startDateInput">
+        <input matInput [matDatepicker]="startPicker" [max]="maxDateStart" placeholder="Inicio" [formControl]="startDateInput">
         <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
         <mat-datepicker #startPicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field class="date-picker">
-        <input matInput [matDatepicker]="endPicker" placeholder="Fin" [formControl]="endDateInput">
+        <input matInput [matDatepicker]="endPicker" placeholder="Fin" [min]="minDateEnd" [max]="maxDateEnd" [formControl]="endDateInput">
         <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
         <mat-datepicker #endPicker></mat-datepicker>
       </mat-form-field>
     </div>
     <div>
       <mat-form-field class="uri-filter">
-        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Uri">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Sequence" [value]="shortenID">
       </mat-form-field>
     </div>
   </div>

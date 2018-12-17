@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 
 interface TableRow{
     date: String,
@@ -19,6 +20,8 @@ interface TableHeader{
 })
 export class StaticsComponent implements OnInit {
 
+  shortenID: String = "";
+
   dataSource = new MatTableDataSource<Object>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -33,20 +36,49 @@ export class StaticsComponent implements OnInit {
    * Forms config
    */
   startDateInput = new FormControl(new Date(), Validators.required);
-  endPicker = new FormControl(new Date(), Validators.required);
+  endDateInput = new FormControl(new Date(), Validators.required);
+  maxDateStart = new Date();
+  minDateEnd = new Date();
+  maxDateEnd  =  new Date();
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.changeTableSearchParameter();
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+    this.startDateInput.setValue(startDate);
+    this.minDateEnd = startDate;
+    this.shortenID = this.route.snapshot.paramMap.get('id');
+    if(!this.shortenID){
+      this.shortenID = "";
+    }
+    this.changeTableSearchParameter(this.startDateInput.value, this.endDateInput.value, this.shortenID);
     this.dataSource.paginator = this.paginator;
+    this.startDateInput.valueChanges.subscribe(val => {
+      this.changeTableSearchParameter(val, this.endDateInput.value, this.shortenID);
+      this.minDateEnd = val;
+    });
+
+    this.endDateInput.valueChanges.subscribe(val => {
+      this.changeTableSearchParameter(this.startDateInput.value, val, this.shortenID);
+      this.maxDateStart = val;
+    });
   }
 
   applyFilter(filterValue: string) {
-    console.log(filterValue);
+    this.shortenID=filterValue;
+    this.changeTableSearchParameter(this.startDateInput.value, this.endDateInput.value, this.shortenID);
   }
 
-  changeTableSearchParameter(){
+  getDifferentParameters(){
+    
+  }
+
+  changeTableSearchParameter(dateStart:Date, dateEnd:Date, parameter : String){
+    // TODO:
+    console.log(dateStart);
+    console.log(dateEnd);
+    console.log(parameter);
     this.tableData = [
       {
         date: '11/12/2018',

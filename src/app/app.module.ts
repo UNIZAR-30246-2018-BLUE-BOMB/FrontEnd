@@ -17,6 +17,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTabsModule} from '@angular/material/tabs';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -24,6 +25,7 @@ import { UrlShortenerScreenComponent } from './url-shortener-screen/url-shortene
 import { ShortenerResultDialogComponent } from './url-shortener-screen/shortener-result-dialog/shortener-result-dialog.component';
 import { StaticsComponent } from './statics/statics.component';
 import { RedirectPageComponent } from './redirect-page/redirect-page.component';
+import { StaticsGlobalComponent } from './statics-global/statics-global.component';
 
 const appRoutes: Routes = [
   {
@@ -40,6 +42,24 @@ const appRoutes: Routes = [
   {
     path: 'statics',
     component: StaticsComponent,
+    data: { title: 'Estadísticas' },
+    pathMatch: 'full'
+  },
+  {
+    path: 'statics/:id',
+    component: StaticsComponent,
+    data: { title: 'Estadísticas' },
+    pathMatch: 'full'
+  },
+  {
+    path: 'statics-global',
+    component: StaticsGlobalComponent,
+    data: { title: 'Estadísticas' },
+    pathMatch: 'full'
+  },
+  {
+    path: 'statics-global/:id',
+    component: StaticsGlobalComponent,
     data: { title: 'Estadísticas' },
     pathMatch: 'full'
   },
@@ -63,7 +83,8 @@ const appRoutes: Routes = [
     UrlShortenerScreenComponent,
     ShortenerResultDialogComponent,
     StaticsComponent,
-    RedirectPageComponent
+    RedirectPageComponent,
+    StaticsGlobalComponent
   ],
   entryComponents: [UrlShortenerScreenComponent, ShortenerResultDialogComponent],
   imports: [
@@ -82,6 +103,7 @@ const appRoutes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    MatTabsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
