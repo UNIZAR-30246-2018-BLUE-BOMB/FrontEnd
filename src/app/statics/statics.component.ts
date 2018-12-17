@@ -1,16 +1,11 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
-import {MatPaginator, MatTableDataSource} from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
-interface TableRow{
-    date: String,
-    ie: Number
-}
-
-interface TableHeader{
-  date: String,
-  ie: String
+class TableRow {
+  date: String;
+  data: Map<string, Number>;
 }
 
 @Component({
@@ -22,15 +17,20 @@ export class StaticsComponent implements OnInit {
 
   shortenID: String = "";
 
-  dataSource = new MatTableDataSource<Object>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataSourceOS = new MatTableDataSource<TableRow>();
+  @ViewChild(MatPaginator) paginatorOS: MatPaginator;
+
+  dataSourceBrowser= new MatTableDataSource<TableRow>();
+  @ViewChild(MatPaginator) paginatorBrowser: MatPaginator;
 
   /**
    * Table config
    */
-  columnsNames: TableHeader = {date:"Fecha", ie: "Internet Explorer"} // Name of different columns of the table
-  tableData: Array<TableRow>; // Data to display on the table
-  columnsIDs: Array<String> = ['date', 'ie']; // ID of different columns of the table, this make a relation between columnNames and displayedData
+  columnsNamesOS: Array<String> = new Array<String>(); // Name of different columns of the table
+  tableDataOS: Array<TableRow> = new Array<TableRow>();
+
+  columnsNamesBrowser: Array<String> = new Array<String>(); // Name of different columns of the table
+  tableDataBrowser: Array<TableRow> = new Array<TableRow>();
 
   /**
    * Forms config
@@ -39,7 +39,7 @@ export class StaticsComponent implements OnInit {
   endDateInput = new FormControl(new Date(), Validators.required);
   maxDateStart = new Date();
   minDateEnd = new Date();
-  maxDateEnd  =  new Date();
+  maxDateEnd = new Date();
 
   constructor(private route: ActivatedRoute) { }
 
@@ -49,11 +49,12 @@ export class StaticsComponent implements OnInit {
     this.startDateInput.setValue(startDate);
     this.minDateEnd = startDate;
     this.shortenID = this.route.snapshot.paramMap.get('id');
-    if(!this.shortenID){
+    if (!this.shortenID) {
       this.shortenID = "";
     }
     this.changeTableSearchParameter(this.startDateInput.value, this.endDateInput.value, this.shortenID);
-    this.dataSource.paginator = this.paginator;
+    this.dataSourceOS.paginator = this.paginatorOS;
+    this.dataSourceOS.paginator = this.paginatorBrowser;
     this.startDateInput.valueChanges.subscribe(val => {
       this.changeTableSearchParameter(val, this.endDateInput.value, this.shortenID);
       this.minDateEnd = val;
@@ -66,55 +67,67 @@ export class StaticsComponent implements OnInit {
   }
 
   applyFilter(filterValue: string) {
-    this.shortenID=filterValue;
+    this.shortenID = filterValue;
     this.changeTableSearchParameter(this.startDateInput.value, this.endDateInput.value, this.shortenID);
   }
 
-  getDifferentParameters(){
-    
+  getAllBrowsers() {
+    // TODO:
+    let browsers = ["Fecha", "Chomium", "Firefox", "Internet Explorer", "Edge"];
+    this.columnsNamesBrowser = browsers;
   }
 
-  changeTableSearchParameter(dateStart:Date, dateEnd:Date, parameter : String){
+  getAllOS() {
     // TODO:
-    console.log(dateStart);
-    console.log(dateEnd);
-    console.log(parameter);
-    this.tableData = [
-      {
-        date: '11/12/2018',
-        ie: 80
-      },
-      {
-        date: '12/12/2018',
-        ie: 80
-      },
-      {
-        date: '11/12/2018',
-        ie: 80
-      },
-      {
-        date: '12/12/2018',
-        ie: 80
-      },
-      {
-        date: '11/12/2018',
-        ie: 80
-      },
-      {
-        date: '12/12/2018',
-        ie: 80
-      },
-      {
-        date: '11/12/2018',
-        ie: 80
-      },
-      {
-        date: '12/12/2018',
-        ie: 80
-      }
-    ];
+    let os = ["Fecha", "Windows", "Linux", "Mac"];
+    this.columnsNamesOS = os;
+  }
 
-    this.dataSource.data = this.tableData;
+  getElement(tr: TableRow, elementName: string): String {
+    if (elementName == "Fecha") {
+      return tr.date;
+    } else {
+      let actual = tr.data.get(elementName);
+      console.log(elementName);
+      console.log(tr);
+      if (!actual) {
+        return (new Number(0)).toString();
+      } else {
+        return (new Number(actual)).toString();
+      }
+    }
+  }
+
+  changeOSData(dateStart: Date, dateEnd: Date, parameter: String) {
+    // TODO:
+    let newRow: TableRow = new TableRow();
+    newRow.date = '11/12/97';
+    newRow.data = new Map<string, Number>();
+    newRow.data.set("Windows", 88);
+    newRow.data.set("Linux", 88);
+
+    this.tableDataOS.push(newRow);
+  }
+
+  changeBrowserData(dateStart: Date, dateEnd: Date, parameter: String) {
+    // TODO:
+    let newRow: TableRow = new TableRow();
+    newRow.date = '11/12/97';
+    newRow.data = new Map<string, Number>();
+    newRow.data.set("Chomium", 88);
+    newRow.data.set("Firefox", 88);
+
+    this.tableDataBrowser.push(newRow);
+  }
+
+  changeTableSearchParameter(dateStart: Date, dateEnd: Date, parameter: String) {
+    this.getAllOS();
+    this.changeOSData(dateStart, dateEnd, parameter);
+    this.getAllBrowsers();
+    this.changeBrowserData(dateStart, dateEnd, parameter);
+
+    this.dataSourceOS.data = this.tableDataOS;
+    this.dataSourceBrowser.data = this.tableDataBrowser;
   }
 
 }
