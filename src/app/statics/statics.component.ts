@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
 
 class TableRow {
   date: String;
@@ -41,7 +43,7 @@ export class StaticsComponent implements OnInit {
   minDateEnd = new Date();
   maxDateEnd = new Date();
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit() {
     let startDate = new Date();
@@ -72,6 +74,10 @@ export class StaticsComponent implements OnInit {
   }
 
   getAllBrowsers() {
+    let self =
+    this.http.get('https://api.github.com/users/seeschweiler').subscribe(data => {
+      console.log(data);
+    });
     // TODO:
     let browsers = ["Fecha", "Chomium", "Firefox", "Internet Explorer", "Edge"];
     this.columnsNamesBrowser = browsers;

@@ -26,6 +26,7 @@ import { ShortenerResultDialogComponent } from './url-shortener-screen/shortener
 import { StaticsComponent } from './statics/statics.component';
 import { RedirectPageComponent } from './redirect-page/redirect-page.component';
 import { StaticsGlobalComponent } from './statics-global/statics-global.component';
+import { HttpClientModule } from '@angular/common/http';
 
 const appRoutes: Routes = [
   {
@@ -104,6 +105,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatTabsModule,
+    HttpClientModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
