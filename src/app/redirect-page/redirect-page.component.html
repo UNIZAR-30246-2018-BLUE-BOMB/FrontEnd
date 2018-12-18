@@ -1,12 +1,9 @@
 <nav>
   <mat-toolbar color="primary">
     <mat-toolbar-row>
-      <!-- This fills the remaining space of the current row -->
-      <span class="fill-remaining-space"></span>
-
-      <button mat-button>Acceder</button>
+      <span>El anuncio durará {{ timeoutRedirect }} segundos</span>
     </mat-toolbar-row>
   </mat-toolbar>
 </nav>
 
-<iframe src="https://www.w3schools.com" class="ads-page"></iframe>
+<iframe [src]="adsPage" class="ads-page"></iframe>
