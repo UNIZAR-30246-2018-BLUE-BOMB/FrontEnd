@@ -66,6 +66,17 @@ export class StaticsComponent implements OnInit {
       this.changeTableSearchParameter(this.startDateInput.value, val, this.shortenID);
       this.maxDateStart = val;
     });
+
+    this.getAllOS(()=>{
+      this.changeOSData(this.startDateInput.value, this.endDateInput.value, this.shortenID, ()=> {
+        this.dataSourceOS.data = this.tableDataOS;
+      });
+    });
+    this.getAllBrowsers(()=>{
+      this.changeBrowserData(this.startDateInput.value, this.endDateInput.value, this.shortenID, ()=> {
+        this.dataSourceBrowser.data = this.tableDataBrowser;
+      });
+    });
   }
 
   applyFilter(filterValue: string) {
@@ -73,20 +84,28 @@ export class StaticsComponent implements OnInit {
     this.changeTableSearchParameter(this.startDateInput.value, this.endDateInput.value, this.shortenID);
   }
 
-  getAllBrowsers() {
-    let self =
-    this.http.get('https://api.github.com/users/seeschweiler').subscribe(data => {
-      console.log(data);
+  getAllBrowsers(onFinish:()=>void) {
+    this.http.get('http://localhost:8080/browser/support').subscribe(data => {
+      let browsers=[];
+      if (data instanceof Array){
+        browsers = data.map(v => v.agent);
+      }
+      browsers.unshift("Fecha");
+      this.columnsNamesBrowser = browsers; 
+      onFinish();
     });
-    // TODO:
-    let browsers = ["Fecha", "Chomium", "Firefox", "Internet Explorer", "Edge"];
-    this.columnsNamesBrowser = browsers;
   }
 
-  getAllOS() {
-    // TODO:
-    let os = ["Fecha", "Windows", "Linux", "Mac"];
-    this.columnsNamesOS = os;
+  getAllOS(onFinish:()=>void) {
+    this.http.get('http://localhost:8080/os/support').subscribe(data => {
+      let browsers=[];
+      if (data instanceof Array){
+        browsers = data.map(v => v.agent);
+      }
+      browsers.unshift("Fecha");
+      this.columnsNamesOS = browsers;
+      onFinish();
+    });
   }
 
   getElement(tr: TableRow, elementName: string): String {
@@ -94,8 +113,6 @@ export class StaticsComponent implements OnInit {
       return tr.date;
     } else {
       let actual = tr.data.get(elementName);
-      console.log(elementName);
-      console.log(tr);
       if (!actual) {
         return (new Number(0)).toString();
       } else {
@@ -104,36 +121,76 @@ export class StaticsComponent implements OnInit {
     }
   }
 
-  changeOSData(dateStart: Date, dateEnd: Date, parameter: String) {
-    // TODO:
-    let newRow: TableRow = new TableRow();
-    newRow.date = '11/12/97';
-    newRow.data = new Map<string, Number>();
-    newRow.data.set("Windows", 88);
-    newRow.data.set("Linux", 88);
+  private formatDate(date: Date) : String {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-    this.tableDataOS.push(newRow);
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+  changeOSData(dateStart: Date, dateEnd: Date, sequence: String, onFinish:()=>void) {
+    if(!sequence || sequence=="") return;
+
+    let startDateString = this.formatDate(dateStart);
+    let dateEndString = this.formatDate(dateEnd);
+
+    let path_to_search = "http://localhost:8080/" + sequence + "/stats/daily?parameter=os&&maxAmountOfDataToRetrieve=200&&startDate="+startDateString+"&&dateEnd=" + dateEndString;
+
+    this.http.get(path_to_search).subscribe(data => {
+
+      if (data instanceof Array){
+        data.forEach( value => {
+          let newRow: TableRow = new TableRow();
+          newRow.date = value.day;
+          newRow.data = new Map<string, Number>();
+          value.clickStat.forEach( statValue => {
+            newRow.data.set(statValue.agent, statValue.clicks);
+          });
+
+          this.tableDataOS.push(newRow);
+        });
+      }
+      onFinish();
+    });
   }
 
-  changeBrowserData(dateStart: Date, dateEnd: Date, parameter: String) {
-    // TODO:
-    let newRow: TableRow = new TableRow();
-    newRow.date = '11/12/97';
-    newRow.data = new Map<string, Number>();
-    newRow.data.set("Chomium", 88);
-    newRow.data.set("Firefox", 88);
+  changeBrowserData(dateStart: Date, dateEnd: Date, sequence: String, onFinish:()=>void) {
+    if(!sequence || sequence=="") return;
 
-    this.tableDataBrowser.push(newRow);
+    let startDateString = this.formatDate(dateStart);
+    let dateEndString = this.formatDate(dateEnd);
+
+    let path_to_search = "http://localhost:8080/" + sequence + "/stats/daily?parameter=browser&&maxAmountOfDataToRetrieve=200&&startDate="+startDateString+"&&dateEnd=" + dateEndString;
+
+    this.http.get(path_to_search).subscribe(data => {
+
+      if (data instanceof Array){
+        data.forEach( value => {
+          let newRow: TableRow = new TableRow();
+          newRow.date = value.day;
+          newRow.data = new Map<string, Number>();
+          value.clickStat.forEach( statValue => {
+            newRow.data.set(statValue.agent, statValue.clicks);
+          });
+
+          this.tableDataBrowser.push(newRow);
+        });
+      }
+      onFinish();
+    });
   }
 
   changeTableSearchParameter(dateStart: Date, dateEnd: Date, parameter: String) {
-    this.getAllOS();
-    this.changeOSData(dateStart, dateEnd, parameter);
-    this.getAllBrowsers();
-    this.changeBrowserData(dateStart, dateEnd, parameter);
-
-    this.dataSourceOS.data = this.tableDataOS;
-    this.dataSourceBrowser.data = this.tableDataBrowser;
+    this.changeOSData(dateStart, dateEnd, parameter, ()=> {
+      this.dataSourceOS.data = this.tableDataOS;
+    });
+    this.changeBrowserData(dateStart, dateEnd, parameter, ()=> {
+      this.dataSourceBrowser.data = this.tableDataBrowser;
+    });
   }
-
 }
