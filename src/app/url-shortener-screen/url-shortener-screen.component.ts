@@ -63,7 +63,7 @@ export class UrlShortenerScreenComponent {
       let path_to_search = 'http://localhost:8080/short';
 
       // Message to send in bost body
-      let message_to_send = {};
+     /* let message_to_send = {};
       if (this.adsInputForm.enabled) {
         message_to_send = {
           headURL: this.urlInputForm.value,
@@ -74,10 +74,20 @@ export class UrlShortenerScreenComponent {
         message_to_send = {
           headURL: this.urlInputForm.value
         };
+      }*/
+
+      // Message to send in parameters
+      if (this.adsInputForm.enabled) {
+        path_to_search = path_to_search + "?headURL=" + 
+        this.urlInputForm.value + "&&interstitialURL=" + 
+        this.adsInputForm.value + "&&secondsToRedirect=10";
+
+      } else {
+        path_to_search = path_to_search + "?headURL=" + this.urlInputForm.value;
       }
 
       // Call rest api
-      this.http.post(path_to_search, message_to_send).subscribe(data => {
+      this.http.post(path_to_search, {}).subscribe(data => {
         if (data instanceof ShortResponse) {
           this.openDialog(data.qrReference, data.shortedURL);
         } else {
