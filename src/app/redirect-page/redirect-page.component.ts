@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import {DomSanitizer,SafeResourceUrl} from '@angular/platform-browser';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 
@@ -13,13 +13,14 @@ export class RedirectPageComponent implements OnInit {
 
   stompClient = null;
 
-  shortenID: String = "";
+  shortenID: String = '';
 
   adsPage: SafeResourceUrl;
 
   timeoutRedirect: Number = 0;
 
-  constructor(private route: ActivatedRoute, public sanitizer:DomSanitizer) { }
+  constructor(private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+  }
 
   ngOnInit() {
     this.shortenID = this.route.snapshot.paramMap.get('id');
@@ -43,10 +44,10 @@ export class RedirectPageComponent implements OnInit {
         let interstitialURL = JSON.parse(message.body).interstitialURL;
         let secondsToRedirect = JSON.parse(message.body).secondsToRedirect;
 
-        if(interstitialURL!=null && interstitialURL!=""){
+        if (interstitialURL != null && interstitialURL != '') {
           self.adsPage = self.sanitizer.bypassSecurityTrustResourceUrl(interstitialURL);
           self.timeoutRedirect = secondsToRedirect;
-        }else if(headURL!=null && headURL!=""){
+        } else if (headURL != null && headURL != '') {
           self.redirectToURL(headURL);
         }
       });
@@ -62,8 +63,8 @@ export class RedirectPageComponent implements OnInit {
     console.log('Disconnected');
   }
 
-  private redirectToURL(newURL: string){
+  private redirectToURL(newURL: string) {
     this.disconnect();
-   window.location.href = newURL;
+    window.location.href = newURL;
   }
 }

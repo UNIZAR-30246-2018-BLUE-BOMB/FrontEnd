@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { MatCheckboxChange, MatDialog } from '@angular/material';
-import { ShortenerResultDialogComponent } from "./shortener-result-dialog/shortener-result-dialog.component";
-import { FormControl, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import {Component} from '@angular/core';
+import {MatCheckboxChange, MatDialog} from '@angular/material';
+import {ShortenedResultDialogComponent} from './shortener-result-dialog/shortened-result-dialog.component';
+import {FormControl, Validators} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+import {ShortResponse} from '../models/shortResponse';
 
 @Component({
   selector: 'app-url-shortener-screen',
@@ -25,19 +26,20 @@ export class UrlShortenerScreenComponent {
   /**
    * Ads input field's form control
    */
-  public adsInputForm = new FormControl({ value: '', disabled: true }, [Validators.required, Validators.pattern(this.urlRegExp)]);
+  public adsInputForm = new FormControl({value: '', disabled: true}, [Validators.required, Validators.pattern(this.urlRegExp)]);
 
   /**
    * Message shown in the shortener button
    */
-  public buttonText = "ACORTAR";
+  public buttonText = 'ACORTAR';
 
   /**
    * Control if is shortener button enabled
    */
   public isShortenerButtonEnabled = true;
 
-  constructor(public dialog: MatDialog, private http: HttpClient) { }
+  constructor(public dialog: MatDialog, private http: HttpClient) {
+  }
 
   /**
    * Function execuded when shorten url button is clicked
@@ -56,51 +58,50 @@ export class UrlShortenerScreenComponent {
     // Only open dialog if fields are corrects
     if (this.urlInputForm.valid && adsInputFormValid) {
       this.isShortenerButtonEnabled = false;
-      this.buttonText = "PROCESANDO ...";
+      this.buttonText = 'PROCESANDO ...';
 
-      let path_to_search = "http://localhost:8080/short";
+      let path_to_search = 'http://localhost:8080/short';
 
       // Message to send in bost body
       let message_to_send = {};
-      if(this.adsInputForm.enabled){
+      if (this.adsInputForm.enabled) {
         message_to_send = {
           headURL: this.urlInputForm.value,
           interstitialURL: this.adsInputForm.value,
           secondsToRedirect: 15
-        }
-      }else{
+        };
+      } else {
         message_to_send = {
           headURL: this.urlInputForm.value
-        }
+        };
       }
 
       // Call rest api
-      /*
       this.http.post(path_to_search, message_to_send).subscribe(data => {
-        if (data instanceof Array){
-
+        if (data instanceof ShortResponse) {
+          this.openDialog(data.qrReference, data.shortedURL);
+        } else {
+          // TODO: Treat error
+          console.log('Error ocurred');
         }
-      });*/
-      // TODO: Call rest api
-      setTimeout(ignore => {
-        this.openDialog(this.urlInputForm.value);
-      }, 2000);
+      });
     }
   }
 
   /**
    * Open a dialog and show the shorten uri and the qr code
-   * @param shortedUri Shorten URI
+   * @param qrReferenceURL Shorten sequence base QR path
+   * @param shortedURL Shorten URI
    */
-  private openDialog(shortedUri: String): void {
+  private openDialog(qrReferenceURL: String, shortedURL: String): void {
     // TODO: Pass correct image
-    const dialogRef = this.dialog.open(ShortenerResultDialogComponent, {
+    const dialogRef = this.dialog.open(ShortenedResultDialogComponent, {
       width: '350px',
-      data: { uri: shortedUri }
+      data: {shortenedUrl: shortedURL, qrURL: qrReferenceURL}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.buttonText = "ACORTAR";
+      this.buttonText = 'ACORTAR';
       this.isShortenerButtonEnabled = true;
     });
   }
@@ -112,8 +113,7 @@ export class UrlShortenerScreenComponent {
   public onCheckboxChange(event: MatCheckboxChange) {
     if (event.checked) {
       this.adsInputForm.enable();
-    }
-    else {
+    } else {
       this.adsInputForm.disable();
     }
   }

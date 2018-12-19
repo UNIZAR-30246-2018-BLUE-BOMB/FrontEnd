@@ -22,7 +22,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { UrlShortenerScreenComponent } from './url-shortener-screen/url-shortener-screen.component';
-import { ShortenerResultDialogComponent } from './url-shortener-screen/shortener-result-dialog/shortener-result-dialog.component';
+import { ShortenedResultDialogComponent } from './url-shortener-screen/shortener-result-dialog/shortened-result-dialog.component';
 import { StaticsComponent } from './statics/statics.component';
 import { RedirectPageComponent } from './redirect-page/redirect-page.component';
 import { StaticsGlobalComponent } from './statics-global/statics-global.component';
@@ -82,12 +82,12 @@ const appRoutes: Routes = [
     AppComponent,
     NavbarComponent,
     UrlShortenerScreenComponent,
-    ShortenerResultDialogComponent,
+    ShortenedResultDialogComponent,
     StaticsComponent,
     RedirectPageComponent,
     StaticsGlobalComponent
   ],
-  entryComponents: [UrlShortenerScreenComponent, ShortenerResultDialogComponent],
+  entryComponents: [UrlShortenerScreenComponent, ShortenedResultDialogComponent],
   imports: [
     MatDatepickerModule,
     MatNativeDateModule,
