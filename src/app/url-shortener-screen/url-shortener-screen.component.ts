@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatCheckboxChange, MatDialog } from '@angular/material';
 import { ShortenerResultDialogComponent } from "./shortener-result-dialog/shortener-result-dialog.component";
 import { FormControl, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-url-shortener-screen',
@@ -36,7 +37,7 @@ export class UrlShortenerScreenComponent {
    */
   public isShortenerButtonEnabled = true;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private http: HttpClient) { }
 
   /**
    * Function execuded when shorten url button is clicked
@@ -57,6 +58,29 @@ export class UrlShortenerScreenComponent {
       this.isShortenerButtonEnabled = false;
       this.buttonText = "PROCESANDO ...";
 
+      let path_to_search = "http://localhost:8080/short";
+
+      // Message to send in bost body
+      let message_to_send = {};
+      if(this.adsInputForm.enabled){
+        message_to_send = {
+          headURL: this.urlInputForm.value,
+          interstitialURL: this.adsInputForm.value,
+          secondsToRedirect: 15
+        }
+      }else{
+        message_to_send = {
+          headURL: this.urlInputForm.value
+        }
+      }
+
+      // Call rest api
+      /*
+      this.http.post(path_to_search, message_to_send).subscribe(data => {
+        if (data instanceof Array){
+
+        }
+      });*/
       // TODO: Call rest api
       setTimeout(ignore => {
         this.openDialog(this.urlInputForm.value);
