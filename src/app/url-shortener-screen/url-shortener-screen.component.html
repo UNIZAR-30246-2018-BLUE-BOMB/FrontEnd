@@ -5,6 +5,7 @@
     <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm">
     <mat-error *ngIf="urlInputForm.hasError('required')">Este campo es obligatorio</mat-error>
     <mat-error *ngIf="urlInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
+    <mat-error *ngIf="headNoReachableError">La Url introducida no es alcanzable</mat-error>
   </mat-form-field>
 
   <div>
@@ -12,6 +13,7 @@
       <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm">
       <mat-error *ngIf="adsInputForm.hasError('required')">Este campo es obligatorio</mat-error>
       <mat-error *ngIf="adsInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
+      <mat-error *ngIf="adsNoReachableError">La Url introducida no es alcanzable</mat-error>
     </mat-form-field>
     <mat-checkbox (change)="onCheckboxChange($event)" class="checkbox-ads">Incluir publicidad</mat-checkbox>
   </div>
