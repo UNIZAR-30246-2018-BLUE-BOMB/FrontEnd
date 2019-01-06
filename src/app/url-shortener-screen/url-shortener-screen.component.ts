@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { MatCheckboxChange, MatDialog } from '@angular/material';
-import { ShortenedResultDialogComponent } from './shortener-result-dialog/shortened-result-dialog.component';
-import { FormControl, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { ShortResponse } from '../models/shortResponse';
+import {Component} from '@angular/core';
+import {MatCheckboxChange, MatDialog} from '@angular/material';
+import {ShortenedResultDialogComponent} from './shortener-result-dialog/shortened-result-dialog.component';
+import {FormControl, Validators} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+import {ShortResponse} from '../models/shortResponse';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-url-shortener-screen',
@@ -26,7 +27,7 @@ export class UrlShortenerScreenComponent {
   /**
    * Ads input field's form control
    */
-  public adsInputForm = new FormControl({ value: '', disabled: true }, [Validators.required, Validators.pattern(this.urlRegExp)]);
+  public adsInputForm = new FormControl({value: '', disabled: true}, [Validators.required, Validators.pattern(this.urlRegExp)]);
 
   /**
    * Message shown in the shortener button
@@ -72,8 +73,8 @@ export class UrlShortenerScreenComponent {
     if (this.urlInputForm.valid && adsInputFormValid) {
       this.isShortenerButtonEnabled = false;
       this.buttonText = 'PROCESANDO ...';
-      let path_to_search = 'http://localhost:8080/short';
-      
+      let path_to_search = environment.backEndURI + '/short';
+
       // Message to send in parameters
       if (this.adsInputForm.enabled) {
         path_to_search = path_to_search + '?headURL=' +
@@ -86,23 +87,23 @@ export class UrlShortenerScreenComponent {
 
       // Call rest api
       this.http.post<ShortResponse>(path_to_search, {}).subscribe((data: ShortResponse) => {
-        this.openDialog(data.qrReferenceUrl, data.shortedUrl);
-        console.log('Enviado');
-      }, error => {
-        this.buttonText = 'ACORTAR';
-        this.isShortenerButtonEnabled = true;
-        console.error(error.error.message);
+          this.openDialog(data.qrReferenceUrl, data.shortedUrl);
+          console.log('Enviado');
+        }, error => {
+          this.buttonText = 'ACORTAR';
+          this.isShortenerButtonEnabled = true;
+          console.error(error.error.message);
 
-        if (error.error.message == 'Ad URL is not reachable') {
-          this.adsInputForm.markAsTouched();
-          this.adsNoReachableError = true;
-          this.adsInputForm.setErrors({})
-        } else {
-          this.urlInputForm.markAsTouched();
-          this.headNoReachableError = true;
-          this.urlInputForm.setErrors({})
+          if (error.error.message === 'Ad URL is not reachable') {
+            this.adsInputForm.markAsTouched();
+            this.adsNoReachableError = true;
+            this.adsInputForm.setErrors({});
+          } else {
+            this.urlInputForm.markAsTouched();
+            this.headNoReachableError = true;
+            this.urlInputForm.setErrors({});
+          }
         }
-      }
       );
     }
   }
@@ -115,10 +116,10 @@ export class UrlShortenerScreenComponent {
   private openDialog(qrReferenceURL: String, shortedURL: String): void {
     const dialogRef = this.dialog.open(ShortenedResultDialogComponent, {
       width: '600px',
-      data: { shortenedUrl: shortedURL, qrURL: qrReferenceURL }
+      data: {shortenedUrl: shortedURL, qrURL: qrReferenceURL}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(ignore => {
       this.buttonText = 'ACORTAR';
       this.isShortenerButtonEnabled = true;
     });

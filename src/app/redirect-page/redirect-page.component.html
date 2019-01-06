@@ -1,9 +1,15 @@
-<nav>
-  <mat-toolbar color="primary">
-    <mat-toolbar-row>
-      <span>El anuncio durará {{ timeoutRedirect }} segundos</span>
-    </mat-toolbar-row>
-  </mat-toolbar>
-</nav>
+<div class="box">
+  <nav>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <span *ngIf="isProcessed">El anuncio durará {{ timeoutRedirect }} segundos</span>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </nav>
 
-<iframe [src]="adsPage" class="ads-page"></iframe>
+  <iframe *ngIf="isProcessed" [src]="adsPage" class="ads-page"></iframe>
+
+  <div *ngIf="!isProcessed" class="message-container">
+    <h1>Procesando</h1>
+  </div>
+</div>

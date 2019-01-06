@@ -1,12 +1,5 @@
 # FrontEnd
 
-## TODO list
-- Include rest api in shortener-screen
-- Render correct qr in shortener-result-dialog
-- Implement copy to clipboard in shortener-result-dialog
-- Implement Redirect page (iframe + redirection)
-- Implement Statics page (animations and receive data with websockets)
-
 ## Usage instructions
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.3.
 

@@ -38,7 +38,6 @@ export class ShortenedResultDialogComponent {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
-    this.dialogRef.close();
   }
 
   /**

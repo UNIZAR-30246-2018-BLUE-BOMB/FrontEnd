@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {MatTableDataSource} from '@angular/material';
+import {ActivatedRoute} from '@angular/router';
+import {environment} from '../../environments/environment';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 
@@ -31,14 +32,14 @@ export class StaticsGlobalComponent implements OnInit {
    * Table by browser config
    */
   dataSourceByBrowser = new MatTableDataSource<Object>();
-  columnsNamesByBrowser: TableHeader = { agent: 'Navegador', clicks: 'Visitas' }; // Name of different columns of the table
+  columnsNamesByBrowser: TableHeader = {agent: 'Navegador', clicks: 'Visitas'}; // Name of different columns of the table
   tableDataByBrowser: Array<TableRow>; // Data to display on the table
 
   /**
    * Table by os config
    */
   dataSourceByOS = new MatTableDataSource<Object>();
-  columnsNamesByOS: TableHeader = { agent: 'Sistema operativo', clicks: 'Visitas' }; // Name of different columns of the table
+  columnsNamesByOS: TableHeader = {agent: 'Sistema operativo', clicks: 'Visitas'}; // Name of different columns of the table
   tableDataByOS: Array<TableRow>; // Data to display on the table
 
   constructor(private route: ActivatedRoute) {
@@ -60,45 +61,42 @@ export class StaticsGlobalComponent implements OnInit {
   changeTableSearchParameter(parameter: String) {
     this.tableDataByBrowser = [];
     this.tableDataByOS = [];
-
-    if (parameter === '') {
-      this.tableDataByBrowser = [];
-      this.tableDataByOS = [];
-    }
-
     this.disconnect();
-    this.connect(parameter);
+
+    if (parameter !== '') {
+      this.connect(parameter);
+    }
   }
 
 
   private connect(sequence: String) {
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(environment.backEndURI + '/ws');
     this.stompClient = Stomp.over(socket);
-    var self = this;
+    const self = this;
     this.stompClient.connect({}, function (frame) {
       console.log('Connected: ' + frame);
 
       self.stompClient.subscribe('/user/stats/global', function (greeting) {
-        if(JSON.parse(greeting.body).parameter==="os"){
+        if (JSON.parse(greeting.body).parameter === 'os') {
           self.tableDataByOS = JSON.parse(greeting.body).stats;
           self.dataSourceByOS.data = self.tableDataByOS;
-        }else{
+        } else {
           self.tableDataByBrowser = JSON.parse(greeting.body).stats;
           self.dataSourceByBrowser.data = self.tableDataByBrowser;
         }
       });
 
       self.stompClient.subscribe('/topic/stats/global/os/' + sequence, function (greeting) {
-        let actual = JSON.parse(greeting.body).stats;
-        actual.array.forEach(element => {
+        const actual = JSON.parse(greeting.body).stats;
+        actual.forEach(element => {
           let contenido = false;
-          for(let i = 0; i < self.tableDataByOS.length; i++){
-            if(self.tableDataByOS[i].agent === element.agent){
-              self.tableDataByOS[i]=element;
+          for (let i = 0; i < self.tableDataByOS.length; i++) {
+            if (self.tableDataByOS[i].agent === element.agent) {
+              self.tableDataByOS[i] = element;
               contenido = true;
             }
           }
-          if(!contenido){
+          if (!contenido) {
             self.tableDataByOS.push(element);
           }
         });
@@ -106,16 +104,17 @@ export class StaticsGlobalComponent implements OnInit {
 
       self.stompClient.subscribe('/topic/stats/global/browser/' + sequence, function (greeting) {
         let actual = JSON.parse(greeting.body).stats;
-        actual.array.forEach(element => {
+        actual.forEach(element => {
           let contenido = false;
-          for(let i = 0; i < self.tableDataByBrowser.length; i++){
-            if(self.tableDataByBrowser[i].agent === element.agent){
-              self.tableDataByBrowser[i]=element;
+          for (let i = 0; i < self.tableDataByBrowser.length; i++) {
+            if (self.tableDataByBrowser[i].agent === element.agent) {
+              self.tableDataByBrowser[i] = element;
               contenido = true;
             }
           }
-          if(!contenido){
-            self.tableDataByOS.push(element);
+          if (!contenido) {
+            self.tableDataByBrowser.push(element);
+            console.log('pusheado');
           }
         });
       });

@@ -27,6 +27,7 @@ import { StaticsComponent } from './statics/statics.component';
 import { RedirectPageComponent } from './redirect-page/redirect-page.component';
 import { StaticsGlobalComponent } from './statics-global/statics-global.component';
 import { HttpClientModule } from '@angular/common/http';
+import { Error404Component } from './error404/error404.component';
 
 const appRoutes: Routes = [
   {
@@ -70,10 +71,16 @@ const appRoutes: Routes = [
     data: { title: 'Redirigiendo' },
     pathMatch: 'full'
   },
+  {
+    path: 'notfound',
+    component: Error404Component,
+    data: { title: 'Página no encontrada' },
+    pathMatch: 'full'
+  },
   /* If path not match with anything (Page not found) go to main screen*/
   {
     path: '**',
-    redirectTo: '/shortener'
+    redirectTo: '/notfound'
   }
 ];
 
@@ -85,7 +92,8 @@ const appRoutes: Routes = [
     ShortenedResultDialogComponent,
     StaticsComponent,
     RedirectPageComponent,
-    StaticsGlobalComponent
+    StaticsGlobalComponent,
+    Error404Component
   ],
   entryComponents: [UrlShortenerScreenComponent, ShortenedResultDialogComponent],
   imports: [

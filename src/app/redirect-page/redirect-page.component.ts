@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-redirect-page',
@@ -17,37 +18,51 @@ export class RedirectPageComponent implements OnInit {
 
   adsPage: SafeResourceUrl;
 
-  timeoutRedirect: Number = 0;
+  timeoutRedirect = 0;
 
-  constructor(private route: ActivatedRoute, public sanitizer: DomSanitizer) {
+  isProcessed = false;
+
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, public sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
-    this.shortenID = this.route.snapshot.paramMap.get('id');
+    this.shortenID = this.activatedRoute.snapshot.paramMap.get('id');
     this.connect(this.shortenID);
   }
 
   private connect(sequence: String) {
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(environment.backEndURI + '/ws');
     this.stompClient = Stomp.over(socket);
-    var self = this;
+    const self = this;
     this.stompClient.connect({}, function (frame) {
       console.log('Connected: ' + frame);
 
       self.stompClient.subscribe('/user/queue/error/info', function (error) {
-        console.log(error.body);
-        // TODO: What do when errors come?
+        self.router.navigate(['/error']);
       });
 
       self.stompClient.subscribe('/user/info/' + sequence, function (message) {
-        let headURL = JSON.parse(message.body).headURL;
-        let interstitialURL = JSON.parse(message.body).interstitialURL;
-        let secondsToRedirect = JSON.parse(message.body).secondsToRedirect;
+        const headURL = JSON.parse(message.body).headURL;
+        const interstitialURL = JSON.parse(message.body).interstitialURL;
+        const secondsToRedirect = JSON.parse(message.body).secondsToRedirect;
 
-        if (interstitialURL != null && interstitialURL != '') {
+        if (interstitialURL != null && interstitialURL !== '') {
           self.adsPage = self.sanitizer.bypassSecurityTrustResourceUrl(interstitialURL);
           self.timeoutRedirect = secondsToRedirect;
-        } else if (headURL != null && headURL != '') {
+          self.isProcessed = true;
+          // Decrement timeoutRedirect
+          const decrementTimeoutFunction = function () {
+            if (self.timeoutRedirect > 0) {
+              self.timeoutRedirect = self.timeoutRedirect - 1;
+            }
+
+            if (self.timeoutRedirect > 0) {
+              setTimeout(decrementTimeoutFunction, 1000);
+            }
+          };
+          setTimeout(decrementTimeoutFunction, 1000);
+
+        } else if (headURL != null && headURL !== '') {
           self.redirectToURL(headURL);
         }
       });
