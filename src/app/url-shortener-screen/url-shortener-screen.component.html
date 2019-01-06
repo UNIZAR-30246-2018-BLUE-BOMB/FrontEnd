@@ -2,7 +2,7 @@
 
 <div class="form-container">
   <mat-form-field class="input-forms">
-    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm">
+    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm" (paste)="validateHeadURL()" (keyup)="onHeadChange()">
     <mat-error *ngIf="urlInputForm.hasError('required')">Este campo es obligatorio</mat-error>
     <mat-error *ngIf="urlInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
     <mat-error *ngIf="headNoReachableError">La Url introducida no es alcanzable</mat-error>
@@ -10,7 +10,7 @@
 
   <div>
     <mat-form-field class="input-forms">
-      <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm">
+      <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm" (paste)="validateAdURL()" (keyup)="onAdsChange()">
       <mat-error *ngIf="adsInputForm.hasError('required')">Este campo es obligatorio</mat-error>
       <mat-error *ngIf="adsInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
       <mat-error *ngIf="adsNoReachableError">La Url introducida no es alcanzable</mat-error>

@@ -17,7 +17,7 @@ export class UrlShortenerScreenComponent {
    * Regular expression for URLs detection
    * Source: https://stackoverflow.com/questions/52017171/angular-material-url-validation-with-pattern
    */
-  public urlRegExp = /(^|\s)((https?:\/\/)[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi;
+  public urlRegExp = /(^|\s)((https?:\/\/)[\w-]+(\.[\w-]+)*(:\d+)?(\/[\w-]+)*\/?)/gi;
 
   /**
    * Url input field's form control
@@ -135,5 +135,35 @@ export class UrlShortenerScreenComponent {
     } else {
       this.adsInputForm.disable();
     }
+  }
+
+  /**
+   * Validate head url
+   */
+  public validateHeadURL(){
+    this.headNoReachableError = false;
+    this.urlInputForm.markAsTouched();
+  }
+
+  /**
+   * Validate ad url
+   */
+  public validateAdURL(){
+    this.adsNoReachableError = false;
+    this.adsInputForm.markAsTouched();
+  }
+
+  /**
+   * On head uri change
+   */
+  public onHeadChange(){
+    this.headNoReachableError = false;
+  }
+
+  /**
+   * On ad uri change
+   */
+  public onAdsChange(){
+    this.adsNoReachableError = false;
   }
 }
