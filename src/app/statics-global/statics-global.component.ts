@@ -88,33 +88,36 @@ export class StaticsGlobalComponent implements OnInit {
 
       self.stompClient.subscribe('/topic/stats/global/os/' + sequence, function (greeting) {
         const actual = JSON.parse(greeting.body).stats;
-        actual.forEach(element => {
+        actual.forEach((element: TableRow) => {
           let contenido = false;
           for (let i = 0; i < self.tableDataByOS.length; i++) {
             if (self.tableDataByOS[i].agent === element.agent) {
               self.tableDataByOS[i] = element;
+              self.dataSourceByOS.data = self.tableDataByOS;
               contenido = true;
             }
           }
           if (!contenido) {
             self.tableDataByOS.push(element);
+            self.dataSourceByOS.data = self.tableDataByOS;
           }
         });
       });
 
       self.stompClient.subscribe('/topic/stats/global/browser/' + sequence, function (greeting) {
         let actual = JSON.parse(greeting.body).stats;
-        actual.forEach(element => {
+        actual.forEach((element: TableRow) => {
           let contenido = false;
           for (let i = 0; i < self.tableDataByBrowser.length; i++) {
             if (self.tableDataByBrowser[i].agent === element.agent) {
               self.tableDataByBrowser[i] = element;
+              self.dataSourceByBrowser.data = self.tableDataByBrowser;
               contenido = true;
             }
           }
           if (!contenido) {
             self.tableDataByBrowser.push(element);
-            console.log('pusheado');
+            self.dataSourceByBrowser.data = self.tableDataByBrowser;
           }
         });
       });
