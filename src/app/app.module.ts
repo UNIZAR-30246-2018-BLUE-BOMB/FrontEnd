@@ -10,6 +10,7 @@ import {
   MatCardModule,
   MatDialogModule,
   MatNativeDateModule,
+  MatSnackBarModule,
   MAT_DATE_LOCALE
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -97,6 +98,7 @@ const appRoutes: Routes = [
   ],
   entryComponents: [UrlShortenerScreenComponent, ShortenedResultDialogComponent],
   imports: [
+    MatSnackBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,

@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 export interface DialogData {
@@ -19,7 +19,9 @@ export class ShortenedResultDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ShortenedResultDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,  public sanitizer: DomSanitizer) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public sanitizer: DomSanitizer,
+    public snackBar: MatSnackBar) {
     this.qrReference = sanitizer.bypassSecurityTrustResourceUrl(data.qrURL);
   }
 
@@ -38,6 +40,9 @@ export class ShortenedResultDialogComponent {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
+    this.snackBar.open('Copiado', null, {
+      duration: 3000
+    });
   }
 
   /**

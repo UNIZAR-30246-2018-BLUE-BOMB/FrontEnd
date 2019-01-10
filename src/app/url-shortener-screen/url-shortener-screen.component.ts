@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
 import {MatCheckboxChange, MatDialog} from '@angular/material';
-import {ShortenedResultDialogComponent} from './shortener-result-dialog/shortened-result-dialog.component';
 import {FormControl, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
+import {CustomValidators} from 'ngx-custom-validators';
+import {MatSnackBar} from '@angular/material';
 import {ShortResponse} from '../models/shortResponse';
 import {environment} from '../../environments/environment';
+import {ShortenedResultDialogComponent} from './shortener-result-dialog/shortened-result-dialog.component';
 
 @Component({
   selector: 'app-url-shortener-screen',
@@ -12,22 +14,15 @@ import {environment} from '../../environments/environment';
   styleUrls: ['./url-shortener-screen.component.css']
 })
 export class UrlShortenerScreenComponent {
-
-  /**
-   * Regular expression for URLs detection
-   * Source: https://stackoverflow.com/questions/52017171/angular-material-url-validation-with-pattern
-   */
-  public urlRegExp = /(^|\s)((https?:\/\/)[\w-]+(\.[\w-]+)*(:\d+)?(\/[\w-]+)*\/?)/gi;
-
   /**
    * Url input field's form control
    */
-  public urlInputForm = new FormControl('', [Validators.required, Validators.pattern(this.urlRegExp)]);
+  public urlInputForm = new FormControl('', [Validators.required, CustomValidators.url]);
 
   /**
    * Ads input field's form control
    */
-  public adsInputForm = new FormControl({value: '', disabled: true}, [Validators.required, Validators.pattern(this.urlRegExp)]);
+  public adsInputForm = new FormControl({value: '', disabled: true}, [Validators.required, CustomValidators.url]);
 
   /**
    * Message shown in the shortener button
@@ -39,26 +34,13 @@ export class UrlShortenerScreenComponent {
    */
   public isShortenerButtonEnabled = true;
 
-  /**
-   * Control if head no reachable error shown
-   */
-  public headNoReachableError = false;
-
-  /**
-   * Control if ads no reachable error shown
-   */
-  public adsNoReachableError = false;
-
-  constructor(public dialog: MatDialog, private http: HttpClient) {
+  constructor(public dialog: MatDialog, private http: HttpClient, public snackBar: MatSnackBar) {
   }
 
   /**
    * Function execuded when shorten url button is clicked
    */
   public onShortenUrlClick(): void {
-    this.headNoReachableError = false;
-    this.adsNoReachableError = false;
-
     // Control if adsInputForm is valid
     let adsInputFormValid = true;
 
@@ -88,20 +70,18 @@ export class UrlShortenerScreenComponent {
       // Call rest api
       this.http.post<ShortResponse>(path_to_search, {}).subscribe((data: ShortResponse) => {
           this.openDialog(data.qrReferenceUrl, data.shortedUrl);
-          console.log('Enviado');
         }, error => {
           this.buttonText = 'ACORTAR';
           this.isShortenerButtonEnabled = true;
-          console.error(error.error.message);
 
           if (error.error.message === 'Ad URL is not reachable') {
-            this.adsInputForm.markAsTouched();
-            this.adsNoReachableError = true;
-            this.adsInputForm.setErrors({});
+            this.snackBar.open('La url del anuncio introducido no es alcanzable', null, {
+              duration: 3000
+            });
           } else {
-            this.urlInputForm.markAsTouched();
-            this.headNoReachableError = true;
-            this.urlInputForm.setErrors({});
+            this.snackBar.open('La url introducida no es alcanzable', null, {
+              duration: 3000
+            });
           }
         }
       );
@@ -135,35 +115,5 @@ export class UrlShortenerScreenComponent {
     } else {
       this.adsInputForm.disable();
     }
-  }
-
-  /**
-   * Validate head url
-   */
-  public validateHeadURL(){
-    this.headNoReachableError = false;
-    this.urlInputForm.markAsTouched();
-  }
-
-  /**
-   * Validate ad url
-   */
-  public validateAdURL(){
-    this.adsNoReachableError = false;
-    this.adsInputForm.markAsTouched();
-  }
-
-  /**
-   * On head uri change
-   */
-  public onHeadChange(){
-    this.headNoReachableError = false;
-  }
-
-  /**
-   * On ad uri change
-   */
-  public onAdsChange(){
-    this.adsNoReachableError = false;
   }
 }

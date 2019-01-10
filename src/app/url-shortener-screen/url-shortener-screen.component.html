@@ -2,18 +2,17 @@
 
 <div class="form-container">
   <mat-form-field class="input-forms">
-    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm" (paste)="validateHeadURL()" (keyup)="onHeadChange()">
+    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm">
     <mat-error *ngIf="urlInputForm.hasError('required')">Este campo es obligatorio</mat-error>
-    <mat-error *ngIf="urlInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
-    <mat-error *ngIf="headNoReachableError">La Url introducida no es alcanzable</mat-error>
+    <mat-error *ngIf="urlInputForm.hasError('url')">La Url introducida no es correcta</mat-error>
   </mat-form-field>
+
 
   <div>
     <mat-form-field class="input-forms">
-      <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm" (paste)="validateAdURL()" (keyup)="onAdsChange()">
+      <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm">
       <mat-error *ngIf="adsInputForm.hasError('required')">Este campo es obligatorio</mat-error>
-      <mat-error *ngIf="adsInputForm.hasError('pattern')">La Url introducida no es correcta</mat-error>
-      <mat-error *ngIf="adsNoReachableError">La Url introducida no es alcanzable</mat-error>
+      <mat-error *ngIf="adsInputForm.hasError('url')">La Url introducida no es correcta</mat-error>
     </mat-form-field>
     <mat-checkbox (change)="onCheckboxChange($event)" class="checkbox-ads">Incluir publicidad</mat-checkbox>
   </div>
