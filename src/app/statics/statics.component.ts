@@ -3,8 +3,8 @@ import {FormControl, Validators} from '@angular/forms';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {MatSnackBar} from '@angular/material';
 import {environment} from '../../environments/environment';
-
 
 class TableRow {
   date: String;
@@ -44,7 +44,7 @@ export class StaticsComponent implements OnInit {
   minDateEnd = new Date();
   maxDateEnd = new Date();
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {
+  constructor(private route: ActivatedRoute, private http: HttpClient, public snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -95,6 +95,10 @@ export class StaticsComponent implements OnInit {
       browsers.unshift('Fecha');
       this.columnsNamesBrowser = browsers;
       onFinish();
+    }, ignore =>{
+      this.snackBar.open('Ha fallado la conexión con el back-end', null, {
+        duration: 3000
+      });
     });
   }
 
@@ -107,6 +111,10 @@ export class StaticsComponent implements OnInit {
       browsers.unshift('Fecha');
       this.columnsNamesOS = browsers;
       onFinish();
+    }, ignore =>{
+      this.snackBar.open('Ha fallado la conexión con el back-end', null, {
+        duration: 3000
+      });
     });
   }
 
