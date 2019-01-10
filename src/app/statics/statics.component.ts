@@ -141,7 +141,11 @@ export class StaticsComponent implements OnInit {
   }
 
   changeOSData(dateStart: Date, dateEnd: Date, sequence: String, onFinish: () => void) {
+    // Clear the previous data
+    this.tableDataOS = [];
+
     if (!sequence || sequence === '') {
+      onFinish();
       return;
     }
 
@@ -149,11 +153,10 @@ export class StaticsComponent implements OnInit {
     const dateEndString = this.formatDate(dateEnd);
 
     const path_to_search = environment.backEndURI + '/' + sequence
-      + '/stats/daily?parameter=os&&maxAmountOfDataToRetrieve=200&&startDate=' + startDateString
+      + '/stats/os/daily?maxAmountOfDataToRetrieve=200&&startDate=' + startDateString
       + '&&dateEnd=' + dateEndString;
 
     this.http.get(path_to_search).subscribe(data => {
-
       if (data instanceof Array) {
         data.forEach(value => {
           const newRow: TableRow = new TableRow();
@@ -162,16 +165,21 @@ export class StaticsComponent implements OnInit {
           value.clickStat.forEach(statValue => {
             newRow.data.set(statValue.agent, statValue.clicks);
           });
-
           this.tableDataOS.push(newRow);
         });
       }
+      onFinish();
+    }, ignore => {
       onFinish();
     });
   }
 
   changeBrowserData(dateStart: Date, dateEnd: Date, sequence: String, onFinish: () => void) {
+    // Clear the previous data
+    this.tableDataBrowser = [];
+
     if (!sequence || sequence === '') {
+      onFinish();
       return;
     }
 
@@ -179,7 +187,7 @@ export class StaticsComponent implements OnInit {
     const dateEndString = this.formatDate(dateEnd);
 
     const path_to_search = environment.backEndURI + '/' + sequence
-      + '/stats/daily?parameter=browser&&maxAmountOfDataToRetrieve=200&&startDate=' + startDateString
+      + '/stats/browser/daily?maxAmountOfDataToRetrieve=200&&startDate=' + startDateString
       + '&&dateEnd=' + dateEndString;
 
     this.http.get(path_to_search).subscribe(data => {
@@ -196,6 +204,8 @@ export class StaticsComponent implements OnInit {
           this.tableDataBrowser.push(newRow);
         });
       }
+      onFinish();
+    }, ignore => {
       onFinish();
     });
   }
