@@ -2,19 +2,41 @@
   max-width: 400px;
 }
 
-.form-container{
-  width: fit-content;
-  margin: 15% auto;
-}
-
-.input-forms{
+.input-forms {
   width: 300px;
 }
 
-.short-button{
+.short-button {
   margin-left: 225px;
 }
 
-.checkbox-ads{
+.checkbox-ads {
   margin-left: 16px;
+}
+
+.external-form-container{
+  /* This fills the remaining space*/
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  flex: 1 1 auto;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  flex-flow: column;
+}
+
+.container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
 }

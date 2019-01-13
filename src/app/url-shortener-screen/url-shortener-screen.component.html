@@ -1,21 +1,24 @@
-<app-navbar></app-navbar>
+<div class="container">
+  <app-navbar></app-navbar>
+  <div class="external-form-container">
+    <div>
+      <mat-form-field class="input-forms">
+        <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm">
+        <mat-error *ngIf="urlInputForm.hasError('required')">Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="urlInputForm.hasError('url')">La Url introducida no es correcta</mat-error>
+      </mat-form-field>
 
-<div class="form-container">
-  <mat-form-field class="input-forms">
-    <input matInput placeholder="Uri a acortar" [formControl]="urlInputForm">
-    <mat-error *ngIf="urlInputForm.hasError('required')">Este campo es obligatorio</mat-error>
-    <mat-error *ngIf="urlInputForm.hasError('url')">La Url introducida no es correcta</mat-error>
-  </mat-form-field>
+      <div>
+        <mat-form-field class="input-forms">
+          <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm">
+          <mat-error *ngIf="adsInputForm.hasError('required')">Este campo es obligatorio</mat-error>
+          <mat-error *ngIf="adsInputForm.hasError('url')">La Url introducida no es correcta</mat-error>
+        </mat-form-field>
+        <mat-checkbox (change)="onCheckboxChange($event)" class="checkbox-ads">Incluir publicidad</mat-checkbox>
+      </div>
 
-
-  <div>
-    <mat-form-field class="input-forms">
-      <input matInput placeholder="Uri anuncio" [formControl]="adsInputForm">
-      <mat-error *ngIf="adsInputForm.hasError('required')">Este campo es obligatorio</mat-error>
-      <mat-error *ngIf="adsInputForm.hasError('url')">La Url introducida no es correcta</mat-error>
-    </mat-form-field>
-    <mat-checkbox (change)="onCheckboxChange($event)" class="checkbox-ads">Incluir publicidad</mat-checkbox>
+      <button mat-button color="primary" class="short-button" (click)="onShortenUrlClick()"
+              [disabled]="!isShortenerButtonEnabled">{{buttonText}}</button>
+    </div>
   </div>
-
-  <button mat-button color="primary" class="short-button" (click)="onShortenUrlClick()" [disabled]="!isShortenerButtonEnabled">{{buttonText}}</button>
 </div>

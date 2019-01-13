@@ -55,21 +55,21 @@ export class UrlShortenerScreenComponent {
     if (this.urlInputForm.valid && adsInputFormValid) {
       this.isShortenerButtonEnabled = false;
       this.buttonText = 'PROCESANDO ...';
-      let path_to_search = environment.backEndURI + '/short';
+      let path_to_search = environment.backEndURI
+        + '/short'
+        + '?headURL=' + this.urlInputForm.value;
 
       // Message to send in parameters
       if (this.adsInputForm.enabled) {
-        path_to_search = path_to_search + '?headURL=' +
-          this.urlInputForm.value + '&&interstitialURL=' +
-          this.adsInputForm.value + '&&secondsToRedirect=10';
+        path_to_search = path_to_search
+          + '&&interstitialURL=' + this.adsInputForm.value
+          + '&&secondsToRedirect=10';
 
-      } else {
-        path_to_search = path_to_search + '?headURL=' + this.urlInputForm.value;
       }
 
       // Call rest api
       this.http.post<ShortResponse>(path_to_search, {}).subscribe((data: ShortResponse) => {
-          this.openDialog(data.qrReferenceUrl, data.shortedUrl);
+          this.openDialog(data.qrReferenceUrl + '?height=250&width=250&margin=10', data.shortedUrl);
         }, error => {
           this.buttonText = 'ACORTAR';
           this.isShortenerButtonEnabled = true;
@@ -95,7 +95,7 @@ export class UrlShortenerScreenComponent {
    */
   private openDialog(qrReferenceURL: String, shortedURL: String): void {
     const dialogRef = this.dialog.open(ShortenedResultDialogComponent, {
-      width: '600px',
+      width: '400px',
       data: {shortenedUrl: shortedURL, qrURL: qrReferenceURL}
     });
 
