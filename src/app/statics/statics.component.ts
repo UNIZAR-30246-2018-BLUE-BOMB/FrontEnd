@@ -161,8 +161,8 @@ export class StaticsComponent implements OnInit {
     const dateEndString = this.formatDate(dateEnd);
 
     const path_to_search = environment.backEndURI + '/' + sequence
-      + '/stats/os/daily?maxAmountOfDataToRetrieve=200&&startDate=' + startDateString
-      + '&&dateEnd=' + dateEndString;
+      + '/stats/os/daily?maxAmountOfDataToRetrieve=200&startDate=' + startDateString
+      + '&endDate=' + dateEndString;
 
     this.http.get(path_to_search).subscribe(data => {
       if (data instanceof Array) {
@@ -195,8 +195,8 @@ export class StaticsComponent implements OnInit {
     const dateEndString = this.formatDate(dateEnd);
 
     const path_to_search = environment.backEndURI + '/' + sequence
-      + '/stats/browser/daily?maxAmountOfDataToRetrieve=200&&startDate=' + startDateString
-      + '&&dateEnd=' + dateEndString;
+      + '/stats/browser/daily?maxAmountOfDataToRetrieve=200&startDate=' + startDateString
+      + '&dateEnd=' + dateEndString;
 
     this.http.get(path_to_search).subscribe(data => {
 
