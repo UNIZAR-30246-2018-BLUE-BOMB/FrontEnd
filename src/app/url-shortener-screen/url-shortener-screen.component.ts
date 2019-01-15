@@ -30,9 +30,15 @@ export class UrlShortenerScreenComponent {
   public buttonText = 'ACORTAR';
 
   /**
+   * Default URL if ad is empty and enable
+   */
+  public defaultAd = 'http://www.unizar.es';
+
+  /**
    * Control if is shortener button enabled
    */
   public isShortenerButtonEnabled = true;
+
 
   constructor(public dialog: MatDialog, private http: HttpClient, public snackBar: MatSnackBar) {
   }
@@ -47,6 +53,14 @@ export class UrlShortenerScreenComponent {
     // Mark as touched used fields
     this.urlInputForm.markAsTouched();
     if (this.adsInputForm.enabled) {
+      // If ad is empty, add default
+      if (this.adsInputForm.value === '') {
+        this.adsInputForm.setValue(this.defaultAd);
+        this.snackBar.open('Establecida publicidad por defecto', null, {
+          duration: 1500
+        });
+      }
+
       this.adsInputForm.markAsTouched();
       adsInputFormValid = this.adsInputForm.valid;
     }
